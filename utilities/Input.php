@@ -10,9 +10,12 @@ class Input
 	}
 	public static function get($key, $default = null)
 	{
-		$value = $_REQUEST[$key];
+		$value = self::clean($_REQUEST[$key]);
 		return $value;
 	}
+	public static function clean($value) {
+    return htmlspecialchars(strip_tags($value));
+  }
 	// prevents class from being instantiated
 	private function __construct() {}
 }

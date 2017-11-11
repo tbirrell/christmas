@@ -1,6 +1,6 @@
 <?php 
 	require_once '../utilities/boot.php';
-	var_dump($_SESSION);
+	var_dump(password_hash('123', PASSWORD_DEFAULT));
 	if (Input::has('username')) {
 		$username = Input::get('username');
 		$password = Input::get('password');
@@ -8,7 +8,7 @@
 		$authorized = Auth::attempt($username, $password, $dbc);
 
 		if ($authorized) {
-			header('Location: ' . $_SESSION['back_to']);
+			header('Location: /');
 			exit();
 		}
 	}

@@ -12,9 +12,9 @@ class Auth {
  		$stmt->execute();
 
 		$credentials = $stmt->fetchAll(PDO::FETCH_ASSOC);
-		var_dump($credentials);
 		if (password_verify($password, $credentials[0]["password"])) {
 			$_SESSION["id"] = $credentials[0]["id"];
+			$_SESSION["username"] = $username;
 			return true;
 		} else {
 			return false;

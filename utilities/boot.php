@@ -5,7 +5,14 @@
 	$sessionId = session_id();
 
 	ini_set('display_errors', 1);
+	$base = $_SERVER['DOCUMENT_ROOT'];
 
-	require_once '../database/connect.php';
-	require_once '../security/Auth.php';
-	require_once '../utilities/Input.php';
+
+	require_once $base . '/../database/connect.php';
+	require_once $base . '/../security/Auth.php';
+	require_once $base . '/../utilities/Input.php';
+
+	if (!Auth::check()) {
+		header('Location: /login.php');
+		exit();
+	}
