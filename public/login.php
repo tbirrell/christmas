@@ -1,6 +1,5 @@
 <?php 
 	require_once '../utilities/boot.php';
-	var_dump(password_hash('123', PASSWORD_DEFAULT));
 	if (Input::has('username')) {
 		$username = Input::get('username');
 		$password = Input::get('password');
