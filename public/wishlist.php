@@ -161,7 +161,7 @@
 				id,
 			}
 		}).done(function(){
-			window.location.reload();
+			window.location = window.location.href;
 		});
 	});
 </script>
