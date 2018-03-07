@@ -1,10 +1,23 @@
 <?php
 	require_once '../utilities/boot.php';
 
-	$select = "SELECT * FROM list WHERE for_user <> :for AND for_user <> 0 ";
+	//id of person to focus for bdays
+	$bday = 5;
+
+	$today = date('Y-m-d');
+
+	$select = "SELECT * 
+						 FROM `list` 
+						 WHERE for_user <> :for 
+						 AND for_user <> 0
+						 AND (
+						 		claimed IS NULL
+								OR expire > :expire 
+						 )";
 
 	$stmt = $dbc->prepare($select);
 	$stmt->bindValue(':for', $_SESSION['id'], PDO::PARAM_INT);
+	$stmt->bindValue(':expire', $today, PDO::PARAM_STR);
 	$stmt->execute();
 
 	$lists = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -29,7 +42,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Christmas Lists</title>
+	<title>Birthday Lists</title>
 <?php require '../module/styles.php'; ?>
 <style>
 	.claimed {
@@ -48,6 +61,14 @@
 	  <ul class="nav nav-tabs" role="tablist">
 	  	<?php $first = 'active' ?>
 		  <?php foreach ($people as $id => $person) : ?>
+					<?php
+						//coopt $first for bday in question
+						if ($id == $bday) {
+							$first = 'active';
+						} else {
+							$first = '';
+						}
+					?>
 		    <li role="presentation" class="<?= $first ?>"><a href="#tab-<?= $id ?>" role="tab" data-toggle="tab"><?= ucfirst($person['name']) ?></a></li>
 		    <?php $first = '' ?>
 			<?php endforeach; ?>	
@@ -57,6 +78,14 @@
 	  <div class="tab-content">
 	  	<?php $first = 'active' ?>
 			<?php foreach ($people as $id => $person) : ?>
+          <?php
+          //coopt $first for bday in question
+          if ($id == $bday) {
+              $first = 'active';
+          } else {
+              $first = '';
+          }
+          ?>
 	    	<div role="tabpanel" class="tab-pane <?= $first ?>" id="tab-<?= $id ?>">
 					<table class="table table-bordered table-striped">
 						<tr>
