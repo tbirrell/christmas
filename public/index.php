@@ -2,17 +2,18 @@
 	require_once '../utilities/boot.php';
 
 	//id of person to focus for bdays
-	$bday = 5;
+	// $bday = 5;
 
 	$today = date('Y-m-d');
 
-	$select = "SELECT * 
-						 FROM `list` 
-						 WHERE for_user <> :for 
-						 AND for_user <> 0
+	$select = "SELECT * #select all
+						 FROM `list` #from the list table
+						 WHERE for_user <> :for #where the item does not belong to the current user
+						 AND for_user <> 0 #and also not the special admin user
 						 AND (
-						 		claimed IS NULL
+						 		claimed IS NULL 
 								OR expire > :expire 
+	 						  OR expire IS NULL
 						 )";
 
 	$stmt = $dbc->prepare($select);
@@ -21,7 +22,6 @@
 	$stmt->execute();
 
 	$lists = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
 	$select = "SELECT * FROM users WHERE id != 0 AND id != :id";
 
 	$stmt = $dbc->prepare($select);
@@ -56,6 +56,7 @@
 <body>
 <div class="container">
 	<?php require '../module/nav.php'; ?>
+	<!-- <div class="alert alert-info" role="alert">Please go to your <strong><a href="/wishlist.php">wishlist</a></strong> and make sure your list is up to date.</div> -->
 	<div>
 	  <!-- Nav tabs -->
 	  <ul class="nav nav-tabs" role="tablist">
@@ -80,18 +81,20 @@
 			<?php foreach ($people as $id => $person) : ?>
           <?php
           //coopt $first for bday in question
-          if ($id == $bday) {
-              $first = 'active';
-          } else {
-              $first = '';
-          }
+          // if ($id == $bday) {
+          //     $first = 'active';
+          // } else {
+          //     $first = '';
+          // }
           ?>
 	    	<div role="tabpanel" class="tab-pane <?= $first ?>" id="tab-<?= $id ?>">
 					<table class="table table-bordered table-striped">
-						<tr>
-							<th class="item">Item</th>
-							<th class="claimed">Claimed</th>
-						</tr>	
+						<thead>
+							<tr>
+								<th class="item">Item</th>
+								<th class="claimed">Claimed</th>
+							</tr>	
+						</thead>
 						<?php foreach ($person as $item) : ?>
 							<?php if (!is_array($item)) continue; ?>
 							<tr>
