@@ -13,4 +13,10 @@
 
 Route::get('/', function () {
     return view('welcome');
-});
+  });
+// })->middleware('auth');
+
+Route::get('login', 'Auth\LoginController@login');
+Route::post('login', 'Auth\LoginController@attemptLogin');
+
+// Route::get('{path}', 'LegacyController@handle')->where('path', '.*')->name('legacy')->middleware('auth');;

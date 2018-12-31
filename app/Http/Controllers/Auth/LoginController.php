@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
 class LoginController extends Controller
@@ -32,8 +33,22 @@ class LoginController extends Controller
      *
      * @return void
      */
-    public function __construct()
+    // public function __construct()
+    // {
+    //     $this->middleware('guest')->except('logout');
+    // }
+
+    public function attemptLogin(Request $request)
     {
-        $this->middleware('guest')->except('logout');
+        $data = $request->all();
+        if (\Auth::attempt(['username' => $data['username'], 'password' => $data['password']])) {
+            // Authentication passed...
+            return redirect()->intended('/');
+        }
+        return redirect('login');
+    }
+    public function login() 
+    {
+        return view('login');
     }
 }

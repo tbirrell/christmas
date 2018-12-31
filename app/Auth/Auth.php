@@ -1,6 +1,6 @@
 <?php
 
-class Auth {
+class MyAuth {
 
 	public static function attempt($username, $password, $dbc) {
 		$select = "SELECT id, password FROM users WHERE username = :username";

@@ -1,5 +1,5 @@
 <?php
-	require_once '../utilities/boot.php';
+	// require_once '../utilities/boot.php';
 
 	//id of person to focus for bdays
 	// $bday = 5;
