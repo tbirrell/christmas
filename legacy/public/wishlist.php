@@ -35,7 +35,7 @@
 <html>
 <head>
 	<title>My Items</title>
-	<?php base_path('legacy/module/styles.php'); ?>
+	<?php require base_path('legacy/module/styles.php'); ?>
 	<style>
 		.remove {
 			width: 10%;
@@ -47,7 +47,7 @@
 </head>
 <body>
 	<div class="container">
-		<?php base_path('legacy/module/nav.php'); ?>
+		<?php require base_path('legacy/module/nav.php'); ?>
 		<div class="row">
 		<h3>Add Item</h3>
 			<form method="post">
@@ -119,7 +119,7 @@
   </div>
 </div>
 
-<?php base_path('legacy/module/scripts.php'); ?>
+<?php require base_path('legacy/module/scripts.php'); ?>
 <script>
 	$('.btn-remove').on('click', function(){
 		var id = $(this).attr('id');
