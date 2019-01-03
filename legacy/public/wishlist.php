@@ -1,5 +1,5 @@
 <?php
-	require_once '../utilities/boot.php';
+	// require_once '../utilities/boot.php';
 
 	if (Input::has('name')) {
 		$name = Input::get('name');
@@ -23,7 +23,7 @@
 		$select = "SELECT * FROM list WHERE for_user = :for";
 
 		$stmt = $dbc->prepare($select);
-		$stmt->bindValue(':for', $_SESSION['id'], PDO::PARAM_INT);
+		$stmt->bindValue(':for', Auth::user()->id, PDO::PARAM_INT);
 		$stmt->execute();
 
 		return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -35,7 +35,7 @@
 <html>
 <head>
 	<title>My Items</title>
-	<?php require '../module/styles.php'; ?>
+	<?php base_path('legacy/module/styles.php'); ?>
 	<style>
 		.remove {
 			width: 10%;
@@ -47,7 +47,7 @@
 </head>
 <body>
 	<div class="container">
-		<?php require '../module/nav.php'; ?>
+		<?php base_path('legacy/module/nav.php'); ?>
 		<div class="row">
 		<h3>Add Item</h3>
 			<form method="post">
@@ -119,7 +119,7 @@
   </div>
 </div>
 
-<?php require '../module/scripts.php'; ?>
+<?php base_path('legacy/module/scripts.php'); ?>
 <script>
 	$('.btn-remove').on('click', function(){
 		var id = $(this).attr('id');

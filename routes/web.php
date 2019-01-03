@@ -16,7 +16,7 @@ Route::get('/', function () {
   });
 // })->middleware('auth');
 
-Route::get('login', 'Auth\LoginController@login');
+Route::get('login', 'Auth\LoginController@login')->name('login');
 Route::post('login', 'Auth\LoginController@attemptLogin');
 
-// Route::get('{path}', 'LegacyController@handle')->where('path', '.*')->name('legacy')->middleware('auth');;
+Route::any('{path}', 'LegacyController@handle')->where('path', '.*')->name('legacy')->middleware('auth');;
