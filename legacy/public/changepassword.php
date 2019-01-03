@@ -1,7 +1,7 @@
 <?php 
-	require_once '../utilities/boot.php';
+	// require_once '../utilities/boot.php';
 
-	$username = $_SESSION['username'];
+	$username = Auth::user()->username;
 
 	if (Input::has('old_pass') && Auth::attempt($username, Input::get('old_pass'), $dbc)) {
 		$password = password_hash(Input::get('new_pass'), PASSWORD_DEFAULT);
@@ -22,11 +22,11 @@
 <html>
 <head>
 	<title>Change Password</title>
-	<?php require '../module/styles.php'; ?>
+	<?php require base_path('legacy/module/styles.php'); ?>
 </head>
 <body>
 	<div class="container">
-		<?php require '../module/nav.php'; ?>
+		<?php require base_path('legacy/module/nav.php'); ?>
 		<?php if (isset($result) && $result) : ?>
 			<div>
 				Password change successful

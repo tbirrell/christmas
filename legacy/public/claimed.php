@@ -1,5 +1,5 @@
 <?php
-	require_once '../utilities/boot.php';
+	// require_once '../utilities/boot.php';
 
 	$today = date('Y-m-d');
 
@@ -15,7 +15,7 @@
 						 )";
 
 	$stmt = $dbc->prepare($select);
-	$stmt->bindValue(':user', $_SESSION['id'], PDO::PARAM_INT);
+	$stmt->bindValue(':user', Auth::user()->id, PDO::PARAM_INT);
 	$stmt->bindValue(':expire', $today, PDO::PARAM_STR);
 	$stmt->execute();
 
@@ -25,11 +25,11 @@
 <html>
 <head>
 	<title>Claimed Gifts</title>
-	<?php require '../module/styles.php'; ?>
+	<?php require base_path('legacy/module/styles.php'); ?>
 </head>
 <body>
 <div class="container">
-	<?php require '../module/nav.php'; ?>
+	<?php require base_path('legacy/module/nav.php'); ?>
 	
 	<table class="table table-bordered table-striped">
 		<thead>

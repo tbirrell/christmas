@@ -17,7 +17,7 @@
 						 )";
 
 	$stmt = $dbc->prepare($select);
-	$stmt->bindValue(':for', $_SESSION['id'], PDO::PARAM_INT);
+	$stmt->bindValue(':for', Auth::user()->id, PDO::PARAM_INT);
 	$stmt->bindValue(':expire', $today, PDO::PARAM_STR);
 	$stmt->execute();
 
@@ -25,7 +25,7 @@
 	$select = "SELECT * FROM users WHERE id != 0 AND id != :id";
 
 	$stmt = $dbc->prepare($select);
-	$stmt->bindValue(':id', $_SESSION['id'], PDO::PARAM_INT);
+	$stmt->bindValue(':id', Auth::user()->id, PDO::PARAM_INT);
 	$stmt->execute();
 
 	$users = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -43,7 +43,7 @@
 <html>
 <head>
 	<title>Birthday Lists</title>
-<?php require '../module/styles.php'; ?>
+<?php require base_path('legacy/module/styles.php'); ?>
 <style>
 	.claimed {
 		width: 10%;
@@ -55,7 +55,7 @@
 </head>
 <body>
 <div class="container">
-	<?php require '../module/nav.php'; ?>
+	<?php require base_path('legacy/module/nav.php'); ?>
 	<!-- <div class="alert alert-info" role="alert">Please go to your <strong><a href="/wishlist.php">wishlist</a></strong> and make sure your list is up to date.</div> -->
 	<div>
 	  <!-- Nav tabs -->
@@ -64,7 +64,7 @@
 		  <?php foreach ($people as $id => $person) : ?>
 					<?php
 						//coopt $first for bday in question
-						if ($id == $bday) {
+						if (isset($bday) && $id == $bday) {
 							$first = 'active';
 						} else {
 							$first = '';
@@ -103,7 +103,7 @@
 								<?php else : ?>
 									<td class="item"><?= $item['name'] ?></td>
 								<?php endif; ?>
-								<?php if($item['claimed'] == $_SESSION['id']) : ?>
+								<?php if($item['claimed'] == Auth::user()->id) : ?>
 									<td class="claimed"><input class="checkbox" type="checkbox" id="<?= $item['id'] ?>" name="" checked></td>
 								<?php elseif ($item['claimed'] != null && $item['claimed'] != 0) : ?>
 									<td class="claimed"><input class="checkbox" type="checkbox" id="<?= $item['id'] ?>" name="" checked disabled></td>
@@ -118,9 +118,9 @@
 			<?php endforeach; ?>
 		</div>
 </div>
-<input type="hidden" name="me" id="me" data-me="<?= $_SESSION['id'] ?>">
+<input type="hidden" name="me" id="me" data-me="<?= Auth::user()->id ?>">
 
-<?php require '../module/scripts.php'; ?>
+<?php require base_path('legacy/module/scripts.php'); ?>
 <script>
 	$(".checkbox").on('change',function() {
 		if ($(this).is(':checked')) {
