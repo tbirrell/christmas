@@ -1,147 +1,60 @@
 <?php
-	require_once '../utilities/boot.php';
 
-	//id of person to focus for bdays
-	// $bday = 5;
+/**
+ * Laravel - A PHP Framework For Web Artisans
+ *
+ * @package  Laravel
+ * @author   Taylor Otwell <taylor@laravel.com>
+ */
 
-	$today = date('Y-m-d');
+define('LARAVEL_START', microtime(true));
 
-	$select = "SELECT * #select all
-						 FROM `list` #from the list table
-						 WHERE for_user <> :for #where the item does not belong to the current user
-						 AND for_user <> 0 #and also not the special admin user
-						 AND (
-						 		claimed IS NULL 
-								OR expire > :expire 
-	 						  OR expire IS NULL
-						 )";
+/*
+|--------------------------------------------------------------------------
+| Register The Auto Loader
+|--------------------------------------------------------------------------
+|
+| Composer provides a convenient, automatically generated class loader for
+| our application. We just need to utilize it! We'll simply require it
+| into the script here so that we don't have to worry about manual
+| loading any of our classes later on. It feels great to relax.
+|
+*/
 
-	$stmt = $dbc->prepare($select);
-	$stmt->bindValue(':for', $_SESSION['id'], PDO::PARAM_INT);
-	$stmt->bindValue(':expire', $today, PDO::PARAM_STR);
-	$stmt->execute();
+require __DIR__.'/../vendor/autoload.php';
 
-	$lists = $stmt->fetchAll(PDO::FETCH_ASSOC);
-	$select = "SELECT * FROM users WHERE id != 0 AND id != :id";
+/*
+|--------------------------------------------------------------------------
+| Turn On The Lights
+|--------------------------------------------------------------------------
+|
+| We need to illuminate PHP development, so let us turn on the lights.
+| This bootstraps the framework and gets it ready for use, then it
+| will load up this application so that we can run it and send
+| the responses back to the browser and delight our users.
+|
+*/
 
-	$stmt = $dbc->prepare($select);
-	$stmt->bindValue(':id', $_SESSION['id'], PDO::PARAM_INT);
-	$stmt->execute();
+$app = require_once __DIR__.'/../bootstrap/app.php';
 
-	$users = $stmt->fetchAll(PDO::FETCH_ASSOC);
-	
-	$people = [];
-	foreach ($users as $user) {
-		$people[$user['id']]['name'] = $user['username'];
-	}
-	foreach ($lists as $item) {
-		$people[$item['for_user']][] = $item;
-	}
+/*
+|--------------------------------------------------------------------------
+| Run The Application
+|--------------------------------------------------------------------------
+|
+| Once we have the application, we can handle the incoming request
+| through the kernel, and send the associated response back to
+| the client's browser allowing them to enjoy the creative
+| and wonderful application we have prepared for them.
+|
+*/
 
-?>
-<!DOCTYPE html>
-<html>
-<head>
-	<title>Birthday Lists</title>
-<?php require '../module/styles.php'; ?>
-<style>
-	.claimed {
-		width: 10%;
-	}
-	.tab-content {
-		margin-top: 20px;
-	}
-</style>
-</head>
-<body>
-<div class="container">
-	<?php require '../module/nav.php'; ?>
-	<!-- <div class="alert alert-info" role="alert">Please go to your <strong><a href="/wishlist.php">wishlist</a></strong> and make sure your list is up to date.</div> -->
-	<div>
-	  <!-- Nav tabs -->
-	  <ul class="nav nav-tabs" role="tablist">
-	  	<?php $first = 'active' ?>
-		  <?php foreach ($people as $id => $person) : ?>
-					<?php
-						//coopt $first for bday in question
-						if ($id == $bday) {
-							$first = 'active';
-						} else {
-							$first = '';
-						}
-					?>
-		    <li role="presentation" class="<?= $first ?>"><a href="#tab-<?= $id ?>" role="tab" data-toggle="tab"><?= ucfirst($person['name']) ?></a></li>
-		    <?php $first = '' ?>
-			<?php endforeach; ?>	
-	  </ul>
+$kernel = $app->make(Illuminate\Contracts\Http\Kernel::class);
 
-	  <!-- Tab panes -->
-	  <div class="tab-content">
-	  	<?php $first = 'active' ?>
-			<?php foreach ($people as $id => $person) : ?>
-          <?php
-          //coopt $first for bday in question
-          // if ($id == $bday) {
-          //     $first = 'active';
-          // } else {
-          //     $first = '';
-          // }
-          ?>
-	    	<div role="tabpanel" class="tab-pane <?= $first ?>" id="tab-<?= $id ?>">
-					<table class="table table-bordered table-striped">
-						<thead>
-							<tr>
-								<th class="item">Item</th>
-								<th class="claimed">Claimed</th>
-							</tr>	
-						</thead>
-						<?php foreach ($person as $item) : ?>
-							<?php if (!is_array($item)) continue; ?>
-							<tr>
-								<?php if ($item['link'] != null) : ?>
-									<td class="item"><a href="<?= $item['link'] ?>"><?= $item['name'] ?></a></td>
-								<?php else : ?>
-									<td class="item"><?= $item['name'] ?></td>
-								<?php endif; ?>
-								<?php if($item['claimed'] == $_SESSION['id']) : ?>
-									<td class="claimed"><input class="checkbox" type="checkbox" id="<?= $item['id'] ?>" name="" checked></td>
-								<?php elseif ($item['claimed'] != null && $item['claimed'] != 0) : ?>
-									<td class="claimed"><input class="checkbox" type="checkbox" id="<?= $item['id'] ?>" name="" checked disabled></td>
-								<?php else : ?>
-									<td class="claimed"><input class="checkbox" type="checkbox" id="<?= $item['id'] ?>" name=""></td>
-								<?php endif; ?>
-							</tr>
-							<?php $first = '' ?>
-						<?php endforeach; ?>	
-					</table>
-		  	</div>
-			<?php endforeach; ?>
-		</div>
-</div>
-<input type="hidden" name="me" id="me" data-me="<?= $_SESSION['id'] ?>">
+$response = $kernel->handle(
+    $request = Illuminate\Http\Request::capture()
+);
 
-<?php require '../module/scripts.php'; ?>
-<script>
-	$(".checkbox").on('change',function() {
-		if ($(this).is(':checked')) {
-    	save($(this).attr('id'), true);
-		} else {
-    	save($(this).attr('id'), false);
-		}
-	});
-	function save(id, checked) {
-		var who = $('#me').attr('data-me');
-		$.ajax({
-			url: '/ajax/ajax.php',
-			method: 'post',
-			data: {
-				action: 'claim',
-				id,
-				who,
-				checked
-			}
-		})
-	}
-</script>
-</body>
-</html>
+$response->send();
+
+$kernel->terminate($request, $response);
