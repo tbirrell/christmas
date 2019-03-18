@@ -16,4 +16,5 @@ Route::get('login', 'Auth\LoginController@login')->name('login');
 Route::post('login', 'Auth\LoginController@attemptLogin');
 Route::get('logout', 'Auth\LoginController@logout')->name('logout');
 
+Route::any('ajax', 'LegacyController@ajax')->name('ajax')->middleware('auth');;
 Route::any('{path}', 'LegacyController@handle')->where('path', '.*')->name('legacy')->middleware('auth');;

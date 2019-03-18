@@ -4,7 +4,7 @@
 	if (Input::has('name')) {
 		$name = Input::get('name');
 		$link = Input::get('link');
-		$for = $_SESSION['id'];
+		$for = Auth::user()->id;
 
 		$insert = "INSERT INTO list (name, link, for_user)
 													VALUES (:name, :link, :for)";
@@ -124,7 +124,7 @@
 	$('.btn-remove').on('click', function(){
 		var id = $(this).attr('id');
 		$.ajax({
-			url: '/ajax/ajax.php',
+			url: '/ajax',
 			method: 'post',
 			data: {
 				action: 'remove',
@@ -152,7 +152,7 @@
 		var id = $('#edit-input-id').val();
 		console.log(id);
 		$.ajax({
-			url: '/ajax/ajax.php',
+			url: '/ajax',
 			method: 'post',
 			data: {
 				action: 'edit',

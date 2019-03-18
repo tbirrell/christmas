@@ -5,7 +5,7 @@
 	}
 	
 
-	require_once '../../utilities/boot.php';
+	// require_once '../../utilities/boot.php';
 
 	if (Input::has('action') && Input::get('action') == 'claim') {
 		$id = Input::get('id');

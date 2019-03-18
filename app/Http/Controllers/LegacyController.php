@@ -13,4 +13,11 @@ class LegacyController extends Controller
             require_once $legacy_path;
         }
     }
+    
+    public function ajax()
+    {
+      require_once base_path('legacy/utilities/boot.php');
+      require_once base_path('legacy/public/ajax/ajax.php');
+
+    }
 }

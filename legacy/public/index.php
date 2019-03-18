@@ -2,7 +2,7 @@
 	// require_once '../utilities/boot.php';
 
 	//id of person to focus for bdays
-	// $bday = 5;
+	$bday = 8;
 
 	$today = date('Y-m-d');
 
