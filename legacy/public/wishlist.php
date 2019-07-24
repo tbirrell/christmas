@@ -18,18 +18,19 @@
  		$stmt->execute();
 	}
 
-	function get_list($dbc)
+	function get_unclaimed_list($dbc)
 	{
-		$select = "SELECT * FROM list WHERE for_user = :for";
+		$select = "SELECT * FROM list WHERE for_user = :for AND (expire > :now OR expire IS NULL)";
 
 		$stmt = $dbc->prepare($select);
 		$stmt->bindValue(':for', Auth::user()->id, PDO::PARAM_INT);
+		$stmt->bindValue(':now', date('Y-m-d'));
 		$stmt->execute();
 
 		return $stmt->fetchAll(PDO::FETCH_ASSOC);
 	}
 
-	$list = get_list($dbc);
+	$unclaimed_list = get_unclaimed_list($dbc);
 ?>
 <!DOCTYPE html>
 <html>
@@ -75,7 +76,7 @@
 					<th class="remove">Edit</th>
 					<th class="remove">Remove</th>
 				</tr>	
-				<?php foreach ($list as $item) : ?>
+				<?php foreach ($unclaimed_list as $item) : ?>
 					<tr id="row-<?= $item['id'] ?>" data-id="<?= $item['id'] ?>" data-name="<?= $item['name'] ?>" data-link="<?= $item['link'] ?>">
 						<?php if ($item['link'] != null) : ?>
 							<td class="item"><a href="<?= $item['link'] ?>"><?= $item['name'] ?></a></td>

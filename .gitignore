@@ -11,3 +11,5 @@ npm-debug.log
 yarn-error.log
 legacy/database/connect.php
 .idea/
+**/.DS_Store
+**/._.DS_Store
